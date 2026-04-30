@@ -3,7 +3,7 @@
 
 import "dotenv/config";
 
-export type LLMProvider = "deepseek" | "qwen" | "perplexity" | "glm";
+export type LLMProvider = "deepseek" | "qwen" | "perplexity" | "glm" | "groq";
 
 // ─── Key Pools ───
 function loadKeys(envVar: string): string[] {
@@ -18,6 +18,7 @@ const KEY_POOLS: Record<LLMProvider, string[]> = {
   qwen: loadKeys("QWEN_KEYS"),
   perplexity: loadKeys("PERPLEXITY_KEYS"),
   glm: loadKeys("GLM_KEYS"),
+  groq: loadKeys("GROQ_KEYS"),
 };
 
 // ─── Health Tracking ───
@@ -34,6 +35,7 @@ const keyHealth: Record<LLMProvider, KeyHealth[]> = {
   qwen: [],
   perplexity: [],
   glm: [],
+  groq: [],
 };
 
 // Initialize health trackers
@@ -76,6 +78,12 @@ export const LLM_CONFIG: Record<
     timeout: 30000,
     role: "composer",
   },
+  groq: {
+    baseURL: "https://api.groq.com/openai/v1",
+    model: "llama-3.3-70b-versatile",
+    timeout: 15000,
+    role: "composer",
+  },
 };
 
 // ─── Round-Robin with Health ───
@@ -84,6 +92,7 @@ let keyIndex: Record<LLMProvider, number> = {
   qwen: 0,
   perplexity: 0,
   glm: 0,
+  groq: 0,
 };
 
 export function getNextKey(provider: LLMProvider): string | null {

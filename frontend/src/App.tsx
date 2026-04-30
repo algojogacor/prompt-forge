@@ -11,7 +11,7 @@ import {
 type Stage = "idea" | "qa-core" | "qa-followup" | "composing" | "result";
 const OUTPUT_TYPES = ["System Prompt", "PRD (Product Requirements)", "Technical Spec", "Job Description", "Content Brief"];
 
-// ─── Design System ───
+// ─── Design System (Responsive) ───
 const YELLOW = "#E8FF47";
 const BG = "#0a0a0a";
 const SURFACE = "rgba(255,255,255,0.03)";
@@ -19,8 +19,11 @@ const BORDER = "rgba(255,255,255,0.07)";
 const TEXT = "rgba(255,255,255,0.9)";
 const TEXT_MUTED = "rgba(255,255,255,0.35)";
 const TEXT_FAINT = "rgba(255,255,255,0.2)";
-const MONO = '"DM Mono", "JetBrains Mono", monospace';
+const MONO = '"DM Mono", "JetBrains Mono", "Fira Code", monospace';
 const SANS = '"Inter", "Geist", system-ui, -apple-system, sans-serif';
+
+// Responsive sizing helpers
+const f = (min: number, max: number) => `clamp(${min}px, ${(min+max)/2/16*100}vw, ${max}px)`;
 
 export default function App() {
   const [stage, setStage] = useState<Stage>("idea");
@@ -78,7 +81,7 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: SANS }}>
       <Header />
-      <div style={{ maxWidth: 840, margin: "0 auto", padding: "32px 20px" }}>
+      <div style={{ width: "min(92vw, 1100px)", margin: "0 auto", padding: f(20, 48) + " " + f(16, 32) }}>
         {error && <ErrorBanner msg={error} onDismiss={() => setError("")} />}
 
         {stage === "idea" && <IdeaStage idea={idea} setIdea={setIdea} outputType={outputType} setOutputType={setOutputType} onSubmit={handleGetCore} />}
@@ -94,10 +97,10 @@ export default function App() {
 // ─── HEADER ───
 function Header() {
   return (
-    <header style={{ display: "flex", alignItems: "baseline", gap: 10, padding: "24px 32px 16px", borderBottom: `1px solid ${BORDER}` }}>
-      <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 600, color: YELLOW, letterSpacing: "0.12em", textTransform: "uppercase" }}>PF</span>
-      <h1 style={{ fontFamily: SANS, fontSize: 15, fontWeight: 500, color: TEXT, letterSpacing: "-0.01em", margin: 0 }}>PromptForge</h1>
-      <span style={{ fontFamily: MONO, fontSize: 10, color: TEXT_MUTED, letterSpacing: "0.06em", marginLeft: "auto" }}>ensemble · v2</span>
+    <header style={{ display: "flex", alignItems: "baseline", gap: f(8, 12), padding: f(16, 24) + " " + f(16, 32) + " " + f(12, 16), borderBottom: `1px solid ${BORDER}` }}>
+      <span style={{ fontFamily: MONO, fontSize: f(11, 14), fontWeight: 600, color: YELLOW, letterSpacing: "0.12em", textTransform: "uppercase" }}>PF</span>
+      <h1 style={{ fontFamily: SANS, fontSize: f(14, 17), fontWeight: 500, color: TEXT, letterSpacing: "-0.01em", margin: 0 }}>PromptForge</h1>
+      <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: TEXT_MUTED, letterSpacing: "0.06em", marginLeft: "auto" }}>ensemble · v2</span>
     </header>
   );
 }
@@ -105,9 +108,9 @@ function Header() {
 // ─── ERROR BANNER ───
 function ErrorBanner({ msg, onDismiss }: { msg: string; onDismiss: () => void }) {
   return (
-    <div style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.25)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <span style={{ fontSize: 13, color: "#FF6B6B", fontFamily: MONO }}>{msg}</span>
-      <button onClick={onDismiss} style={{ background: "none", border: "none", color: "#FF6B6B", cursor: "pointer", fontSize: 16 }}>×</button>
+    <div style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.25)", borderRadius: 10, padding: "12px 16px", marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <span style={{ fontSize: f(12, 14), color: "#FF6B6B", fontFamily: MONO }}>{msg}</span>
+      <button onClick={onDismiss} style={{ background: "none", border: "none", color: "#FF6B6B", cursor: "pointer", fontSize: 18 }}>×</button>
     </div>
   );
 }
@@ -116,22 +119,22 @@ function ErrorBanner({ msg, onDismiss }: { msg: string; onDismiss: () => void })
 function IdeaStage({ idea, setIdea, outputType, setOutputType, onSubmit }: any) {
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: YELLOW, letterSpacing: "0.1em", textTransform: "uppercase" }}>New Project</span>
-        <h2 style={{ fontSize: 28, fontWeight: 600, margin: "8px 0 4px", letterSpacing: "-0.02em" }}>What are we forging?</h2>
-        <p style={{ fontSize: 14, color: TEXT_MUTED, lineHeight: 1.6 }}>Describe your idea. Our ensemble of 3 LLMs will craft it into production-ready output, then cross-score each other.</p>
+      <div style={{ marginBottom: f(24, 32) }}>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: YELLOW, letterSpacing: "0.1em", textTransform: "uppercase" }}>New Project</span>
+        <h2 style={{ fontSize: f(22, 32), fontWeight: 600, margin: "6px 0 4px", letterSpacing: "-0.02em", lineHeight: 1.2 }}>What are we forging?</h2>
+        <p style={{ fontSize: f(13, 15), color: TEXT_MUTED, lineHeight: 1.6, maxWidth: "600px" }}>Describe your idea. Our ensemble of multiple LLMs will craft it into production-ready output, then cross-score each other.</p>
       </div>
-      <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 20, marginBottom: 20 }}>
+      <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: f(16, 24), marginBottom: 20 }}>
         <textarea
-          style={{ width: "100%", background: "transparent", border: "none", color: TEXT, fontSize: 15, fontFamily: "inherit", resize: "vertical", outline: "none", lineHeight: 1.6, minHeight: 100 }}
+          style={{ width: "100%", background: "transparent", border: "none", color: TEXT, fontSize: f(14, 16), fontFamily: "inherit", resize: "vertical", outline: "none", lineHeight: 1.6, minHeight: f(80, 120), boxSizing: "border-box" }}
           placeholder='e.g. "Customer support bot for SaaS — handles refunds, password resets, feature discovery..."'
           value={idea} onChange={(e: any) => setIdea(e.target.value)} rows={4}
         />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12, paddingTop: 12, borderTop: `1px solid ${BORDER}` }}>
-          <select style={{ background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT, fontSize: 12, fontFamily: MONO, padding: "6px 10px", outline: "none" }} value={outputType} onChange={(e: any) => setOutputType(e.target.value)}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12, paddingTop: 12, borderTop: `1px solid ${BORDER}`, flexWrap: "wrap", gap: 10 }}>
+          <select style={{ background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT, fontSize: f(11, 13), fontFamily: MONO, padding: "6px 10px", outline: "none", cursor: "pointer" }} value={outputType} onChange={(e: any) => setOutputType(e.target.value)}>
             {OUTPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
           </select>
-          <button onClick={onSubmit} disabled={!idea.trim()} style={{ background: idea.trim() ? YELLOW : "rgba(255,255,255,0.08)", color: idea.trim() ? BG : TEXT_FAINT, border: "none", borderRadius: 10, padding: "10px 22px", fontSize: 13, fontWeight: 600, fontFamily: MONO, cursor: idea.trim() ? "pointer" : "default", letterSpacing: "0.04em", transition: "all 0.2s" }}>
+          <button onClick={onSubmit} disabled={!idea.trim()} style={{ background: idea.trim() ? YELLOW : "rgba(255,255,255,0.08)", color: idea.trim() ? BG : TEXT_FAINT, border: "none", borderRadius: 10, padding: f(10, 14) + " " + f(20, 28), fontSize: f(12, 14), fontWeight: 600, fontFamily: MONO, cursor: idea.trim() ? "pointer" : "default", letterSpacing: "0.04em", transition: "all 0.2s", whiteSpace: "nowrap" }}>
             FORGE →
           </button>
         </div>
@@ -144,41 +147,41 @@ function IdeaStage({ idea, setIdea, outputType, setOutputType, onSubmit }: any) 
 function QAStage({ questions, answers, setAnswers, onBack, onSkip, onContinue, label }: any) {
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: YELLOW, letterSpacing: "0.1em" }}>{label}</span>
-        <h2 style={{ fontSize: 22, fontWeight: 600, margin: "6px 0 2px" }}>Deep Dive</h2>
-        <p style={{ fontSize: 13, color: TEXT_MUTED }}>Answer what you can. Skip the rest.</p>
+      <div style={{ marginBottom: f(20, 28) }}>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: YELLOW, letterSpacing: "0.1em" }}>{label}</span>
+        <h2 style={{ fontSize: f(20, 26), fontWeight: 600, margin: "6px 0 2px" }}>Deep Dive</h2>
+        <p style={{ fontSize: f(12, 14), color: TEXT_MUTED }}>Answer what you can. Skip the rest — our AI will fill the gaps.</p>
       </div>
       {questions.map((q: Question, i: number) => (
-        <div key={i} style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", display: "block", marginBottom: 4 }}>{i + 1}. {q.question}</label>
-          <span style={{ fontSize: 11, color: TEXT_FAINT, fontFamily: MONO, display: "block", marginBottom: 6 }}>{q.hint}</span>
-          <textarea style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${BORDER}`, background: SURFACE, color: TEXT, fontSize: 13, fontFamily: "inherit", resize: "vertical", outline: "none" }} placeholder="..." value={answers[i]} onChange={(e: any) => { const n = [...answers]; n[i] = e.target.value; setAnswers(n); }} rows={2} />
+        <div key={i} style={{ marginBottom: f(14, 18) }}>
+          <label style={{ fontSize: f(13, 14), fontWeight: 500, color: "rgba(255,255,255,0.7)", display: "block", marginBottom: 4 }}>{i + 1}. {q.question}</label>
+          <span style={{ fontSize: f(10, 12), color: TEXT_FAINT, fontFamily: MONO, display: "block", marginBottom: 6 }}>{q.hint}</span>
+          <textarea style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${BORDER}`, background: SURFACE, color: TEXT, fontSize: f(13, 14), fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} placeholder="Type your answer..." value={answers[i]} onChange={(e: any) => { const n = [...answers]; n[i] = e.target.value; setAnswers(n); }} rows={2} />
         </div>
       ))}
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 20 }}>
-        <button onClick={onBack} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: 12, fontFamily: MONO, cursor: "pointer" }}>← Back</button>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={onSkip} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: 12, fontFamily: MONO, cursor: "pointer" }}>Skip</button>
-          <button onClick={onContinue} style={{ background: YELLOW, color: BG, border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 600, fontFamily: MONO, cursor: "pointer" }}>Continue →</button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24, flexWrap: "wrap", gap: 10 }}>
+        <button onClick={onBack} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: f(11, 13), fontFamily: MONO, cursor: "pointer" }}>← Back</button>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button onClick={onSkip} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: f(11, 13), fontFamily: MONO, cursor: "pointer" }}>Skip</button>
+          <button onClick={onContinue} style={{ background: YELLOW, color: BG, border: "none", borderRadius: 8, padding: "8px 20px", fontSize: f(11, 13), fontWeight: 600, fontFamily: MONO, cursor: "pointer" }}>Continue →</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── STAGE 3: COMPOSING (SHIMMER SKELETON) ───
+// ─── STAGE 3: COMPOSING ───
 function ComposingStage() {
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: YELLOW, letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ marginBottom: f(20, 28) }}>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: YELLOW, letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: 8 }}>
           <PulsingDot /> Composing
         </span>
-        <h2 style={{ fontSize: 22, fontWeight: 600, margin: "6px 0 2px" }}>Ensemble at work</h2>
-        <p style={{ fontSize: 13, color: TEXT_MUTED }}>DeepSeek, Qwen, and GLM composing in parallel. Cross-matrix scoring follows.</p>
+        <h2 style={{ fontSize: f(20, 26), fontWeight: 600, margin: "6px 0 2px" }}>Ensemble at work</h2>
+        <p style={{ fontSize: f(12, 14), color: TEXT_MUTED }}>DeepSeek, Qwen, and GLM composing in parallel. Cross-matrix scoring follows.</p>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: f(10, 14) }}>
         {["DeepSeek", "Qwen", "GLM"].map((name, i) => (
           <SkeletonCard key={name} delay={i * 150} name={name} />
         ))}
@@ -189,13 +192,13 @@ function ComposingStage() {
 
 function SkeletonCard({ delay, name }: { delay: number; name: string }) {
   return (
-    <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, opacity: 0.7 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+    <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: f(16, 20), opacity: 0.7 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 4 }}>{name}</div>
+          <div style={{ fontSize: f(13, 14), fontWeight: 600, color: TEXT, marginBottom: 4 }}>{name}</div>
           <Shimmer w="60%" h={10} />
         </div>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: TEXT_FAINT, display: "flex", alignItems: "center", gap: 5 }}>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 10), color: TEXT_FAINT, display: "flex", alignItems: "center", gap: 5 }}>
           <PulsingDot /> scoring
         </span>
       </div>
@@ -228,42 +231,40 @@ function ResultStage({ result, selectedOutput, onSelect, onReset }: { result: Co
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: YELLOW, letterSpacing: "0.1em" }}>Results</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 600, margin: "6px 0 0" }}>Forged</h2>
-          {hasFailures && <span style={{ fontFamily: MONO, fontSize: 10, color: "#FF6B6B", background: "rgba(255,80,80,0.1)", padding: "2px 8px", borderRadius: 100 }}>{result.compositions.filter(c => c.error || c.timedOut).length} failed</span>}
+      <div style={{ marginBottom: f(20, 28) }}>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: YELLOW, letterSpacing: "0.1em" }}>Results</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <h2 style={{ fontSize: f(20, 26), fontWeight: 600, margin: "6px 0 0" }}>Forged</h2>
+          {hasFailures && <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: "#FF6B6B", background: "rgba(255,80,80,0.1)", padding: "2px 8px", borderRadius: 100 }}>{result.compositions.filter(c => c.error || c.timedOut).length} failed</span>}
         </div>
       </div>
 
       {/* Scoreboard */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginBottom: 28 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: f(10, 14), marginBottom: f(24, 32) }}>
         {result.compositions.map(comp => (
           <LLMCard key={comp.provider} comp={comp} isSelected={selectedOutput === comp.output} onSelect={() => comp.output && onSelect(comp.output)} />
         ))}
       </div>
 
-      {/* Winner / Merged */}
+      {/* Merged / Selected */}
       {result.mergeResult && (
         <OutputBlock label="Merged (Synthesized)" output={result.mergeResult.output} onCopy={() => navigator.clipboard.writeText(result.mergeResult!.output)} />
       )}
-
-      {/* Selected */}
       {selectedOutput && (
         <OutputBlock label="Selected Output" output={selectedOutput} onCopy={() => navigator.clipboard.writeText(selectedOutput)} />
       )}
 
       {/* Key Health */}
-      <details style={{ marginTop: 24, color: TEXT_FAINT, fontSize: 12, fontFamily: MONO, cursor: "pointer" }}>
+      <details style={{ marginTop: 24, color: TEXT_FAINT, fontSize: f(11, 13), fontFamily: MONO, cursor: "pointer" }}>
         <summary>Key Health</summary>
-        <pre style={{ background: SURFACE, padding: 12, borderRadius: 8, marginTop: 8, fontSize: 11, overflow: "auto" }}>
+        <pre style={{ background: SURFACE, padding: 12, borderRadius: 8, marginTop: 8, fontSize: f(10, 12), overflow: "auto", maxHeight: "200px" }}>
           {JSON.stringify(result.keyHealth, null, 2)}
         </pre>
       </details>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28, paddingTop: 16, borderTop: `1px solid ${BORDER}` }}>
-        <button onClick={onReset} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: 12, fontFamily: MONO, cursor: "pointer" }}>← New Project</button>
-        <span style={{ fontFamily: MONO, fontSize: 11, color: TEXT_FAINT }}>{result.totalLatency}ms</span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: f(24, 32), paddingTop: 16, borderTop: `1px solid ${BORDER}`, flexWrap: "wrap", gap: 10 }}>
+        <button onClick={onReset} style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: 8, color: TEXT_MUTED, padding: "8px 18px", fontSize: f(11, 13), fontFamily: MONO, cursor: "pointer" }}>← New Project</button>
+        <span style={{ fontFamily: MONO, fontSize: f(10, 12), color: TEXT_FAINT }}>{result.totalLatency}ms</span>
       </div>
     </div>
   );
@@ -280,40 +281,39 @@ function LLMCard({ comp, isSelected, onSelect }: { comp: StagedOutput; isSelecte
       style={{
         background: isWinner ? "rgba(232,255,71,0.04)" : SURFACE,
         border: isWinner ? `1px solid rgba(232,255,71,0.25)` : isSelected ? `1px solid rgba(255,255,255,0.15)` : `1px solid ${BORDER}`,
-        borderRadius: 12, padding: 20, cursor: comp.output ? "pointer" : "default",
+        borderRadius: 12, padding: f(16, 20), cursor: comp.output ? "pointer" : "default",
         transition: "border-color 0.2s, transform 0.2s", position: "relative",
       }}
       onMouseEnter={e => { if (comp.output) e.currentTarget.style.transform = "translateY(-2px)"; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
     >
       {isWinner && (
-        <span style={{ position: "absolute", top: -1, right: 16, background: YELLOW, color: BG, fontSize: 10, fontWeight: 700, fontFamily: MONO, padding: "2px 8px", borderRadius: "0 0 6px 6px", letterSpacing: "0.08em" }}>WINNER</span>
+        <span style={{ position: "absolute", top: -1, right: 16, background: YELLOW, color: BG, fontSize: f(9, 10), fontWeight: 700, fontFamily: MONO, padding: "2px 8px", borderRadius: "0 0 6px 6px", letterSpacing: "0.08em" }}>WINNER</span>
       )}
 
       {/* Identity */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 6 }}>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: TEXT, marginBottom: 2 }}>{comp.provider.toUpperCase()}</div>
-          <div style={{ fontSize: 11, color: TEXT_FAINT, fontFamily: MONO }}>{comp.model}</div>
+          <div style={{ fontSize: f(13, 15), fontWeight: 600, color: TEXT, marginBottom: 2 }}>{comp.provider.toUpperCase()}</div>
+          <div style={{ fontSize: f(10, 11), color: TEXT_FAINT, fontFamily: MONO }}>{comp.model}</div>
         </div>
         <StatusPill status={status} />
       </div>
 
-      {/* Score or Empty */}
+      {/* Score or Error */}
       {comp.scores ? (
         <div style={{ marginBottom: 14 }}>
           <ScoreBar score={comp.scores.total} maxScore={10} />
-          <div style={{ fontSize: 32, fontWeight: 700, color: "#fff", lineHeight: 1, marginTop: 6, fontFamily: SANS, letterSpacing: "-0.03em" }}>
+          <div style={{ fontSize: f(28, 36), fontWeight: 700, color: "#fff", lineHeight: 1, marginTop: 6, fontFamily: SANS, letterSpacing: "-0.03em" }}>
             {comp.scores.total.toFixed(1)}
-            <span style={{ fontSize: 14, fontWeight: 400, color: TEXT_MUTED, marginLeft: 3 }}>/10</span>
+            <span style={{ fontSize: f(13, 15), fontWeight: 400, color: TEXT_MUTED, marginLeft: 3 }}>/10</span>
           </div>
-          {/* Criteria breakdown */}
           <div style={{ marginTop: 8 }}>
             {Object.entries(comp.scores.criteria).slice(0, 3).map(([k, v]) => (
-              <div key={k} style={{ display: "grid", gridTemplateColumns: "70px 1fr 20px", gap: 6, alignItems: "center", marginBottom: 3 }}>
-                <span style={{ fontSize: 10, color: TEXT_FAINT, fontFamily: MONO, textTransform: "uppercase" }}>{k.replace(/_/g, " ")}</span>
+              <div key={k} style={{ display: "grid", gridTemplateColumns: "minmax(60px, 80px) 1fr 24px", gap: 6, alignItems: "center", marginBottom: 3 }}>
+                <span style={{ fontSize: f(9, 10), color: TEXT_FAINT, fontFamily: MONO, textTransform: "uppercase" }}>{k.replace(/_/g, " ")}</span>
                 <ScoreBar score={v as number} maxScore={10} height={2} />
-                <span style={{ fontSize: 10, color: TEXT_MUTED, textAlign: "right", fontFamily: MONO }}>{v as number}</span>
+                <span style={{ fontSize: f(9, 10), color: TEXT_MUTED, textAlign: "right", fontFamily: MONO }}>{v as number}</span>
               </div>
             ))}
           </div>
@@ -321,11 +321,11 @@ function LLMCard({ comp, isSelected, onSelect }: { comp: StagedOutput; isSelecte
       ) : comp.timedOut ? (
         <EmptyState icon="⏱" title="Timed out" sub="Exceeded 30s limit" />
       ) : comp.error ? (
-        <EmptyState icon="✕" title="Failed" sub={comp.error.substring(0, 40)} />
+        <EmptyState icon="✕" title="Failed" sub={comp.error.substring(0, 50)} />
       ) : null}
 
       {/* Meta */}
-      <div style={{ fontSize: 11, color: TEXT_FAINT, fontFamily: MONO, borderTop: `1px solid ${BORDER}`, paddingTop: 10, display: "flex", justifyContent: "space-between" }}>
+      <div style={{ fontSize: f(10, 11), color: TEXT_FAINT, fontFamily: MONO, borderTop: `1px solid ${BORDER}`, paddingTop: 10, display: "flex", justifyContent: "space-between" }}>
         <span>{comp.latency}ms</span>
         <span>#{comp.rank ?? "—"}</span>
       </div>
@@ -341,7 +341,7 @@ function StatusPill({ status }: { status: string }) {
   }[status] || { label: status, bg: SURFACE, c: TEXT_FAINT };
 
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 8px", borderRadius: 100, background: s.bg, color: s.c, fontSize: 10, fontFamily: MONO, letterSpacing: "0.04em" }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 8px", borderRadius: 100, background: s.bg, color: s.c, fontSize: f(9, 10), fontFamily: MONO, letterSpacing: "0.04em" }}>
       <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.c, flexShrink: 0 }} />
       {s.label}
     </span>
@@ -362,8 +362,8 @@ function EmptyState({ icon, title, sub }: { icon: string; title: string; sub: st
   return (
     <div style={{ padding: "12px 0", margin: "8px 0 14px", borderTop: `1px dashed ${BORDER}`, borderBottom: `1px dashed ${BORDER}`, textAlign: "center" }}>
       <span style={{ fontSize: 20, display: "block", marginBottom: 4 }}>{icon}</span>
-      <div style={{ fontSize: 12, fontWeight: 500, color: TEXT_MUTED }}>{title}</div>
-      <div style={{ fontSize: 10, color: TEXT_FAINT, fontFamily: MONO, marginTop: 2 }}>{sub}</div>
+      <div style={{ fontSize: f(11, 13), fontWeight: 500, color: TEXT_MUTED }}>{title}</div>
+      <div style={{ fontSize: f(9, 10), color: TEXT_FAINT, fontFamily: MONO, marginTop: 2 }}>{sub}</div>
     </div>
   );
 }
@@ -372,21 +372,27 @@ function OutputBlock({ label, output, onCopy }: { label: string; output: string;
   return (
     <div style={{ marginBottom: 20 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: YELLOW, letterSpacing: "0.08em" }}>{label}</span>
-        <button onClick={onCopy} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 6, color: TEXT_MUTED, padding: "4px 10px", fontSize: 11, fontFamily: MONO, cursor: "pointer" }}>Copy</button>
+        <span style={{ fontFamily: MONO, fontSize: f(9, 11), color: YELLOW, letterSpacing: "0.08em" }}>{label}</span>
+        <button onClick={onCopy} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 6, color: TEXT_MUTED, padding: "4px 10px", fontSize: f(10, 12), fontFamily: MONO, cursor: "pointer" }}>Copy</button>
       </div>
-      <pre style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, fontSize: 13, lineHeight: 1.7, color: TEXT, whiteSpace: "pre-wrap", maxHeight: "50vh", overflowY: "auto", fontFamily: "inherit" }}>
+      <pre style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: f(14, 20), fontSize: f(12, 14), lineHeight: 1.7, color: TEXT, whiteSpace: "pre-wrap", maxHeight: "50vh", overflowY: "auto", fontFamily: "inherit" }}>
         {output}
       </pre>
     </div>
   );
 }
 
-// Inject animations
+// ─── Inject Animations & Fonts ───
 const css = document.createElement("style");
 css.textContent = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
   @keyframes shimmer { to { background-position: -200% 0; } }
   @keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; -webkit-font-smoothing: antialiased; }
+  ::selection { background: rgba(232,255,71,0.3); color: #fff; }
+  @media (max-width: 600px) {
+    .hide-mobile { display: none !important; }
+  }
 `;
 document.head.appendChild(css);
