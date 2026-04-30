@@ -1,4 +1,6 @@
-const API_BASE = "/api/compose";
+const API_BASE = import.meta.env.DEV
+  ? "/api/compose"
+  : "https://prompt-forge-api-arya-rizkys-projects.vercel.app/api/compose";
 
 // ─── Types ───
 
@@ -44,16 +46,49 @@ export interface ComposeResult {
   partialFailure: boolean;
 }
 
+// ─── Helpers ───
+
+async function safeApi<T>(url: string, body?: any): Promise<T> {
+  const opts: RequestInit = {
+    method: body ? "POST" : "GET",
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  };
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${url}`, opts);
+  } catch (e: any) {
+    throw new Error(`Network error: ${e.message || "Could not reach server"}`);
+  }
+
+  // Try to parse JSON, fall back to status-based error
+  let data: any;
+  const text = await res.text();
+  try {
+    data = JSON.parse(text);
+  } catch {
+    if (!res.ok) {
+      throw new Error(
+        res.status === 404
+          ? "Backend not available — is the server running on localhost:3001?"
+          : `Server error (${res.status}): ${text.slice(0, 100)}`
+      );
+    }
+    return text as any;
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.error || `Request failed (${res.status})`);
+  }
+
+  return data as T;
+}
+
 // ─── API Calls ───
 
 export async function getCoreQuestions(idea: string): Promise<Question[]> {
-  const res = await fetch(`${API_BASE}/questions/core`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idea }),
-  });
-  if (!res.ok) throw new Error((await res.json()).error);
-  const data = await res.json();
+  const data: any = await safeApi("/questions/core", { idea });
   return data.questions;
 }
 
@@ -61,13 +96,7 @@ export async function getFollowUpQuestions(
   idea: string,
   answers: { question: string; answer: string }[],
 ): Promise<Question[]> {
-  const res = await fetch(`${API_BASE}/questions/followup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idea, answers }),
-  });
-  if (!res.ok) throw new Error((await res.json()).error);
-  const data = await res.json();
+  const data: any = await safeApi("/questions/followup", { idea, answers });
   return data.questions;
 }
 
@@ -77,16 +106,9 @@ export async function runPipeline(
   followUpAnswers: { question: string; answer: string }[],
   outputType = "System Prompt",
 ): Promise<ComposeResult> {
-  const res = await fetch(`${API_BASE}/run`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idea, coreAnswers, followUpAnswers, outputType }),
-  });
-  if (!res.ok) throw new Error((await res.json()).error);
-  return res.json();
+  return safeApi("/run", { idea, coreAnswers, followUpAnswers, outputType });
 }
 
 export async function getHealth() {
-  const res = await fetch(`${API_BASE}/health`);
-  return res.json();
+  return safeApi("/health");
 }

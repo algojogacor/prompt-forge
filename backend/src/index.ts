@@ -16,11 +16,16 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 PromptForge API running on http://localhost:${PORT}`);
-  console.log(`📡 Endpoints:`);
-  console.log(`   POST /api/compose/questions/core     — 3 core questions`);
-  console.log(`   POST /api/compose/questions/followup  — dynamic follow-ups`);
-  console.log(`   POST /api/compose/run                — full 5-stage pipeline`);
-  console.log(`   GET  /api/compose/health             — key health status`);
-});
+// Only listen when running locally (not on Vercel serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 PromptForge API running on http://localhost:${PORT}`);
+    console.log(`📡 Endpoints:`);
+    console.log(`   POST /api/compose/questions/core     — 3 core questions`);
+    console.log(`   POST /api/compose/questions/followup  — dynamic follow-ups`);
+    console.log(`   POST /api/compose/run                — full 5-stage pipeline`);
+    console.log(`   GET  /api/compose/health             — key health status`);
+  });
+}
+
+export default app;
