@@ -55,13 +55,13 @@ export const LLM_CONFIG: Record<
   deepseek: {
     baseURL: "https://api.deepseek.com/v1",
     model: "deepseek-chat",
-    timeout: 15000,
+    timeout: 30000,
     role: "composer",
   },
   qwen: {
-    baseURL: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
     model: "qwen-plus",
-    timeout: 15000,
+    timeout: 25000,
     role: "composer",
   },
   perplexity: {
@@ -73,7 +73,7 @@ export const LLM_CONFIG: Record<
   glm: {
     baseURL: "https://open.bigmodel.cn/api/paas/v4",
     model: "glm-4-flash",
-    timeout: 15000,
+    timeout: 30000,
     role: "composer",
   },
 };
