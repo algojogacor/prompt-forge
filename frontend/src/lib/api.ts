@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.DEV
   ? "/api/compose"
-  : "https://prompt-forge-api-arya-rizkys-projects.vercel.app/api/compose";
+  : "https://prompt-forge-api.vercel.app/api/compose";
 
 // ─── Types ───
 
