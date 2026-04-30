@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.DEV
   ? "/api/compose"
-  : "https://eea2-34-57-12-120.ngrok-free.app/api/compose";
+  : "https://a7ec-34-57-12-120.ngrok-free.app/api/compose";
 
 // ─── Types ───
 
